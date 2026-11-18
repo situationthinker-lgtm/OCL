@@ -18,8 +18,7 @@ if (-not (Test-Path src\generated\prisma\client.ts)) { Run "Generating Prisma cl
 
 if (-not (Test-Path prisma\dev.db)) {
   Write-Host "Creating database + seed data..." -ForegroundColor Cyan
-  npx prisma migrate deploy
-  if ($LASTEXITCODE -ne 0) { Write-Host "Prisma engine download failed, using fallback migrator." -ForegroundColor Yellow; Run "Applying migrations..." "npm run db:migrate:fallback" }
+  Run "Applying migrations..." "npm run db:migrate"
   Run "Seeding sample data..." "npm run db:seed"
 } else { Write-Host "Database already exists - keeping your data (delete prisma\dev.db to reset)." -ForegroundColor DarkGray }
 

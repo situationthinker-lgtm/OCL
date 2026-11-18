@@ -1,6 +1,6 @@
 # Office Cricket League — Beta 1.0
 
-Private league management for office cricket. Next.js 15 (App Router, TypeScript), Tailwind v4, Prisma 7 + SQLite, JWT-cookie auth, Vitest.
+Private league management for office cricket. Next.js 15 (App Router, TypeScript), Tailwind v4, Prisma 7 + libSQL (SQLite locally, Turso hosted), JWT-cookie auth, Vitest. Deploys to Vercel — see `DEPLOY.md`.
 
 ## Run it
 
@@ -14,8 +14,7 @@ The database starts empty apart from one admin login: `admin@ocl.local` / `passw
 
 Want sample data to poke at? `npm run db:seed:demo` on a fresh database adds 14 fictional players, 2 teams and a match (plus `manager@ocl.local` / `player@ocl.local` logins, same password).
 
-Other commands: `npm test`, `npm run build && npm start`, `npm run db:migrate:dev` (new migration after editing `prisma/schema.prisma`).
-If `prisma migrate` cannot download Prisma's schema engine on your network, `npm run db:migrate:fallback` applies the SQL migrations directly.
+Other commands: `npm test`, `npm run build && npm start`, `npm run db:migrate` (applies `prisma/migrations` to whatever `DATABASE_URL` points at, local or Turso), `npm run db:migrate:dev` (generate a new migration after editing `prisma/schema.prisma`).
 
 ## Layout
 
@@ -26,7 +25,7 @@ If `prisma migrate` cannot download Prisma's schema engine on your network, `npm
 - `src/lib/scorecard.ts` — scorecard schema + consistency validation; `src/lib/aggregate.ts` — applies/backs out a match's performances to career stats (approve = +1, reopen = −1, so re-approval never double counts).
 - `src/lib/auth.ts` — sessions, `requireRole` guards, audit helper. `src/middleware.ts` is a coarse first pass; pages and actions re-check.
 - `src/app/<page>/actions.ts` — server actions for all mutations. Zod-validated, transactional where several tables change.
-- `uploads/` — player and team images, served by `/api/uploads/...` (kept out of `public/` so runtime uploads work in production).
+- `src/lib/storage.ts` — image storage: Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, else `./uploads` served by `/api/uploads/...`.
 - `src/test/` — integration tests run the real server actions against `prisma/test.db`.
 
 ## Rating calibration

@@ -10,7 +10,7 @@ command -v node >/dev/null || { echo "Node.js not found. Install Node 20+ from h
 [ -f src/generated/prisma/client.ts ] || npx prisma generate
 if [ ! -f prisma/dev.db ]; then
   echo "Creating database + seed data..."
-  npx prisma migrate deploy || { echo "Prisma engine download failed, using fallback migrator."; npm run db:migrate:fallback; }
+  npm run db:migrate
   npm run db:seed
 else
   echo "Database already exists - keeping your data (delete prisma/dev.db to reset)."
